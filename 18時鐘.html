@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #hour {
+      width: 20%;
+      height: 10px;
+      background-color: skyblue;
+      border-radius: 5px;
+      position: absolute;
+      left: 30%;
+      top: calc(50% - 5px);
+      transform-origin: right center;
+    }
+
+    #minute {
+      width: 40%;
+      height: 8px;
+      background-color: pink;
+      border-radius: 5px;
+      position: absolute;
+      left: 10%;
+      top: calc(50% - 4px);
+      transform-origin: right center;
+    }
+
+    #second {
+      width: 45%;
+      height: 4px;
+      background-color: greenyellow;
+      border-radius: 5px;
+      position: absolute;
+      left: 5%;
+      top: calc(50% - 2px);
+      transform-origin: right center;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* 设置 body 为 flexbox 容器，垂直和水平居中 */
+    body {
+      background-color: rgb(183, 209, 33);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      /* 水平居中 */
+      align-items: center;
+      /* 垂直居中 */
+    }
+
+    /* 笑脸容器 */
+    #clock {
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background-color: #ffcd00;
+      position: relative;
+
+    }
+
+    /* 眼睛容器 */
+    .eyes {
+      position: absolute;
+      top: 25%;
+      /* 眼睛的位置从上边距 */
+      left: 50%;
+      /* 设置为 50% 使容器居中 */
+      width: 180px;
+      /* 容器的宽度为两个眼睛的宽度加间距 */
+      display: flex;
+      justify-content: space-between;
+      /* 让眼睛之间有间距 */
+      transform: translateX(-50%);
+      /* 使容器居中 */
+
+
+    }
+
+    .eye {
+      width: 80px;
+      height: 80px;
+      background-color: rgb(233, 220, 220);
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .eye::before {
+      content: '';
+      width: 40px;
+      height: 40px;
+      background-color: rgb(10, 10, 10);
+      border-radius: 50%;
+      position: absolute;
+      top: 25%;
+
+    }
+
+    /* 嘴巴样式 */
+    #clock::before {
+      content: '';
+      position: absolute;
+      background-color: rgb(173, 75, 15);
+      width: 150px;
+      height: 70px;
+      bottom: 15%;
+      left: 50%;
+      border-bottom-left-radius: 70px;
+      border-bottom-right-radius: 70px;
+      transform: translateX(-50%);
+      transition: 0.5s;
+    }
+
+    #clock:hover::before {
+      position: absolute;
+      background-color: rgb(228, 134, 18);
+      width: 150px;
+      height: 7px;
+      bottom: 15%;
+      left: 50%;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+
+      transform: translateX(-50%);
+    }
+
+    #text {
+      position: relative;
+      top: 204px;
+      left: -257px;
+      font-size: 66px;
+      color: greenyellow;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="clock">
+    <div class="eyes">
+      <div class="eye"></div>
+      <div class="eye"></div>
+    </div>
+    <div id="hour"></div>
+    <div id="minute"></div>
+    <div id="second"></div>
+  </div>
+  <p id="text">00:00:00</p>
+  <script>
+    const elHour = document.getElementById('hour');
+    const elMinute = document.getElementById('minute');
+    const elSecond = document.getElementById('second');
+    const elText = document.getElementById('text');
+
+    const clock = () => {
+      const date = new Date();
+      const h = date.getHours();
+      const m = date.getMinutes();
+      const s = date.getSeconds();
+
+      // Update clock hands' rotation
+      elHour.style.transform = `rotate(${h * 30 + 90}deg)`;
+      elMinute.style.transform = `rotate(${m * 6 + 90}deg)`;
+      elSecond.style.transform = `rotate(${s * 6 + 90}deg)`;
+
+      // Update the digital clock text
+      elText.innerText = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    };
+
+    // Update the clock every second
+    setInterval(clock, 1000);
+    clock(); // Initialize immediately to avoid delay
+
+    // Make the eyes follow the cursor
+    document.querySelector("body").addEventListener("mousemove", eyeball);
+
+    function eyeball(event) {
+      const eyes = document.querySelectorAll(".eye");
+      eyes.forEach(function (eye) {
+        const rect = eye.getBoundingClientRect();
+        const x = rect.left + eye.clientWidth / 2;
+        const y = rect.top + eye.clientHeight / 2;
+        const radian = Math.atan2(event.pageX - x, event.pageY - y);
+        const rot = (radian * (180 / Math.PI) * -1) + 270;
+        eye.style.transform = `rotate(${rot}deg)`;
+      });
+    }
+  </script>
+
+</body>
+
+</html>
